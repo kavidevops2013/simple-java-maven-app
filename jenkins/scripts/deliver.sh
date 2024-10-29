@@ -11,21 +11,17 @@ set +x
 echo 'The following command extracts the value of the <name/> element'
 echo 'within <project/> of your Java/Maven project''s "pom.xml" file.'
 set -x
-NAME=$(mvn -q -DforceStdout help:evaluate -Dexpression=project.name)
+NAME=$(mvn -q -DforceStdout help:evaluate -Dexpression=project.name | sed 's/[^[:print:]]//g')
 set +x
 
 echo 'The following command behaves similarly to the previous one but'
 echo 'extracts the value of the <version/> element within <project/> instead.'
 set -x
-VERSION=$(mvn -q -DforceStdout help:evaluate -Dexpression=project.version)
+VERSION=$(mvn -q -DforceStdout help:evaluate -Dexpression=project.version | sed 's/[^[:print:]]//g')
 set +x
 
 echo 'The following command runs and outputs the execution of your Java'
 echo 'application (which Jenkins built using Maven) to the Jenkins UI.'
-
-# Remove any non-standard characters from NAME and VERSION
-NAME=$(echo "$NAME" | sed 's/[^a-zA-Z0-9._-]//g')
-VERSION=$(echo "$VERSION" | sed 's/[^a-zA-Z0-9._-]//g')
 
 # Check if the jar file exists before attempting to run it
 JAR_FILE="target/${NAME}-${VERSION}.jar"
